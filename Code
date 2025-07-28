@@ -1,0 +1,62 @@
+# unemployment_analysis.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+
+# Load dataset
+data = pd.read_csv("Unemployment in India.csv")
+print("First 5 Rows:\n", data.head())
+
+# Rename columns for ease
+data.columns = ["States", "Date", "Frequency", "Estimated Unemployment Rate (%)", 
+                "Estimated Employed", "Estimated Labour Participation Rate (%)", 
+                "Region"]
+
+# Convert 'Date' to datetime
+data['Date'] = pd.to_datetime(data['Date'], dayfirst=True)
+
+# Basic info
+print("\nData Info:")
+print(data.info())
+
+# Check for missing values
+print("\nMissing Values:\n", data.isnull().sum())
+
+# Describe dataset
+print("\nDataset Description:\n", data.describe())
+
+# Unemployment Trend Over Time
+plt.figure(figsize=(12, 6))
+sns.lineplot(x="Date", y="Estimated Unemployment Rate (%)", data=data, color='red')
+plt.title("Unemployment Rate in India Over Time", fontsize=15)
+plt.xlabel("Date")
+plt.ylabel("Unemployment Rate (%)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# Average Unemployment by State
+state_avg = data.groupby("States")["Estimated Unemployment Rate (%)"].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(12, 8))
+state_avg.plot(kind='bar', color='skyblue')
+plt.title("Average Unemployment Rate by State (2020)", fontsize=15)
+plt.ylabel("Unemployment Rate (%)")
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.show()
+
+# Interactive Choropleth Map
+fig = px.choropleth(data,
+                    locations="Region",
+                    locationmode="ISO-3",
+                    color="Estimated Unemployment Rate (%)",
+                    hover_name="States",
+                    animation_frame="Date",
+                    color_continuous_scale="reds",
+                    title="Unemployment Rate in India (Time Animation)")
+
+fig.update_layout(geo=dict(showframe=False, showcoastlines=False))
+fig.show()
