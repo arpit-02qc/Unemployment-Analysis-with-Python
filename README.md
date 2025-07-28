@@ -32,3 +32,13 @@ This data science project analyzes the **unemployment trends in India** using re
 - Bar plot of average unemployment rate by state
 - Line plot of unemployment over time
 - Region-wise unemployment distribution
+
+## gitignore
+__pycache__/
+.ipynb_checkpoints/
+.env
+.DS_Store
+*.pyc
+*.pkl
+*.csv
+
